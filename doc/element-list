@@ -1,0 +1,8 @@
+org.cvs
+org.cvs.application.api
+org.cvs.application.exceptions
+org.cvs.application.security
+org.cvs.application.services
+org.cvs.data.entities
+org.cvs.data.repositories
+org.cvs.utils
