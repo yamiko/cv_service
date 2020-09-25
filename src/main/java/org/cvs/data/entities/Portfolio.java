@@ -33,7 +33,7 @@ import lombok.ToString;
 @JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Portfolio extends AbstractRetirableEntity {
 
-	@NotBlank(message = "Entry should not be blank")
+	@NotBlank(message = "Portfolio name should not be blank")
 	private String name;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "portfolio")

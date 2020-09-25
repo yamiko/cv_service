@@ -72,7 +72,7 @@ public class Candidate extends AbstractRetirableEntity {
 	public Candidate(String firstName, String middleName, String lastName) {
 		final int FALSE = 0;
 
-		this.firstName = lastName;
+		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;
 		this.setRetired(FALSE);
