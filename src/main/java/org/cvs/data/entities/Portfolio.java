@@ -39,7 +39,7 @@ public class Portfolio extends AbstractRetirableEntity {
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "portfolio")
 	private Set<ApplicationUser> applicationUser = new HashSet<>();
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "portfolio")
+	@ManyToMany(fetch = FetchType.LAZY, cascade =  { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "portfolio")
 	private Set<Candidate> candidate = new HashSet<>();
 
 	public Portfolio(String name) {
@@ -49,5 +49,4 @@ public class Portfolio extends AbstractRetirableEntity {
 		this.setRetired(FALSE);
 		this.setVoided(FALSE);
 	}
-
 }

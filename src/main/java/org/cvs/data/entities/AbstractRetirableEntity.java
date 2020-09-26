@@ -2,6 +2,8 @@ package org.cvs.data.entities;
 
 import javax.persistence.MappedSuperclass;
 
+import org.cvs.utils.Lookup;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class AbstractRetirableEntity extends AbstractVoidableEntity {
-	private int retired;
+	private int retired = Lookup.NOT_RETIRED;
 	private String retiredReason;
 
 }

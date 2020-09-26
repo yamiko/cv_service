@@ -2,6 +2,8 @@ package org.cvs.data.entities;
 
 import javax.persistence.MappedSuperclass;
 
+import org.cvs.utils.Lookup;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +19,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class AbstractVoidableEntity extends AbstractAuditedEntity{
-	private int voided;
+	private int voided = Lookup.NOT_VOIDED;
 	private String voidedReason;
 }

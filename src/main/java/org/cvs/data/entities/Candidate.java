@@ -25,13 +25,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
-* 
-* Defines structure and relationship(s) for the <code>candidate</code> table.
-* 
-* @author Yamiko J. Msosa
-* @version 1.0
-*
-*/
+ * 
+ * Defines structure and relationship(s) for the <code>candidate</code> table.
+ * 
+ * @author Yamiko J. Msosa
+ * @version 1.0
+ *
+ */
 @Entity
 @Getter
 @Setter
@@ -42,13 +42,13 @@ public class Candidate extends AbstractRetirableEntity {
 
 	@NotBlank(message = "First name should not be blank")
 	private String firstName;
-	
+
 	@NotBlank(message = "Last name should not be blank")
 	private String lastName;
 
 	@NotBlank(message = "Address line 1 should not be blank")
 	private String addressLine1;
-	
+
 	@NotBlank(message = "Country should not be blank")
 	private String country;
 
@@ -67,7 +67,7 @@ public class Candidate extends AbstractRetirableEntity {
 	@NotNull(message = "Date of birth should not be blank")
 	private LocalDate dateOfBirth;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "candidate_portfolio", joinColumns = @JoinColumn(name = "candidate_id"), inverseJoinColumns = @JoinColumn(name = "portfolio_id"))
 	private Set<Portfolio> portfolio = new HashSet<>();
 
@@ -80,5 +80,4 @@ public class Candidate extends AbstractRetirableEntity {
 		this.setRetired(FALSE);
 		this.setVoided(FALSE);
 	}
-
 }

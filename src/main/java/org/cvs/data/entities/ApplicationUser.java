@@ -68,5 +68,5 @@ public class ApplicationUser extends AbstractRetirableEntity {
 		this.setRetired(FALSE);
 		this.setVoided(FALSE);
 	}
-
+	
 }
