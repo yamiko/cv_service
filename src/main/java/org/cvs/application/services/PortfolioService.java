@@ -33,24 +33,26 @@ public interface PortfolioService {
 	 *
 	 * @param userId    an ID for the user that is to be associated with this
 	 *                  portfolio
-	 * @param portfolio a portfolio instance to be updated or added if it does not exist
+	 * @param portfolio a portfolio instance to be updated or added if it does not
+	 *                  exist
 	 * 
 	 * @return a newly added or updated portfolio instance
 	 */
 	public Portfolio updatePortfolioWithUser(Long userId, Portfolio portfolio)
-	        throws EntryNotFoundException, EntryNotActiveException, InconsistentDataException;
+	        throws EntryNotFoundException, EntryNotActiveException;
 
 	/**
 	 * Adds a new {@link Portfolio} instance with its associated candidate.
 	 *
-	 * @param candidateId    an ID for the candidate that is to be associated with this
-	 *                  portfolio
-	 * @param portfolio a portfolio instance to be updated or added if it does not exist
+	 * @param candidateId an ID for the candidate that is to be associated with this
+	 *                    portfolio
+	 * @param portfolio   a portfolio instance to be updated or added if it does not
+	 *                    exist
 	 * 
 	 * @return a newly added or updated portfolio instance
 	 */
 	public Portfolio updatePortfolioWithCandidate(Long candidateId, Portfolio portfolio)
-	        throws EntryNotFoundException, EntryNotActiveException, InconsistentDataException;
+	        throws EntryNotFoundException, EntryNotActiveException;
 
 	/**
 	 * Fetches an active {@link Portfolio} instance given its name.

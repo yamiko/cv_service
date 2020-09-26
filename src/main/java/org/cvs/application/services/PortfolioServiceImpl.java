@@ -11,7 +11,6 @@ import javax.validation.Validator;
 
 import org.cvs.application.exceptions.EntryNotActiveException;
 import org.cvs.application.exceptions.EntryNotFoundException;
-import org.cvs.application.exceptions.InconsistentDataException;
 import org.cvs.data.entities.ApplicationUser;
 import org.cvs.data.entities.Candidate;
 import org.cvs.data.entities.Portfolio;
@@ -91,14 +90,14 @@ public class PortfolioServiceImpl implements PortfolioService {
 			}
 
 		}
-		
+
 		// Safely add relationships with (an) existing candidate(s)
 		for (Candidate candidate : candidates) {
 			try {
 				Candidate existingCandidate = candidateService.getActiveCandidate(candidate.getId());
 				if (existingCandidate != null) {
-					log.info(
-					        "Found candidate : " + existingCandidate.getId() + ", created on : " + existingCandidate.getCreatedDate());
+					log.info("Found candidate : " + existingCandidate.getId() + ", created on : "
+					        + existingCandidate.getCreatedDate());
 					existingCandidate.getPortfolio().add(greenPortfolio);
 					candidateRepository.save(existingCandidate);
 					log.info("added portfolio to candidate");
@@ -118,7 +117,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 	@Override
 	public Portfolio updatePortfolioWithUser(Long userId, Portfolio portfolio)
-	        throws EntryNotFoundException, EntryNotActiveException, InconsistentDataException {
+	        throws EntryNotFoundException, EntryNotActiveException {
 		ApplicationUser user;
 
 		try {
@@ -132,21 +131,20 @@ public class PortfolioServiceImpl implements PortfolioService {
 		if (portfolio.getId() != null) { // Only proceed to search for an existing portfolio if we have a valid ID
 			try {
 				existingPortfolio = getActivePortfolio(portfolio.getId());
-				ApplicationUser duplicateUser = existingPortfolio.getApplicationUser().stream()
-				        .filter(u -> u.getId() == user.getId()).findFirst().orElse(null);
-				if (duplicateUser == null) {
-					existingPortfolio.getApplicationUser().add(user);
-				} else {
-					throw new InconsistentDataException("User already exists for this portfolio -> [USER]."
-					        + user.getId() + " :: [PORTFOLIO]." + portfolio.getId());
-				}
-				newPortfolio = portfolioRepository.save(existingPortfolio);
+				user = userService.getActiveUser(userId);
+				user.getPortfolio().add(existingPortfolio); // Add user to portfolio from the main side of the
+				                                            // many-to-many relationship
+				log.info("Added user -> " + user.getId() + " ; to portfolio -> " + portfolio.getId());
+
+				user = userRepository.save(user);
+				newPortfolio = getActivePortfolio(existingPortfolio.getId());
 			} catch (EntryNotFoundException ex) {
 				portfolio.getApplicationUser().add(user);
 				newPortfolio = addPortfolio(portfolio);
 			} catch (EntryNotActiveException ex) {
 				throw new EntryNotActiveException(ex.getMessage());
 			}
+
 		} else {
 			portfolio.getApplicationUser().add(user);
 			newPortfolio = addPortfolio(portfolio);
@@ -157,7 +155,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 	@Override
 	public Portfolio updatePortfolioWithCandidate(Long candidateId, Portfolio portfolio)
-	        throws EntryNotFoundException, EntryNotActiveException, InconsistentDataException {
+	        throws EntryNotFoundException, EntryNotActiveException {
 		Candidate candidate;
 
 		try {
@@ -171,15 +169,12 @@ public class PortfolioServiceImpl implements PortfolioService {
 		if (portfolio.getId() != null) { // Only proceed to search for an existing portfolio if we have a valid ID
 			try {
 				existingPortfolio = getActivePortfolio(portfolio.getId());
-				Candidate duplicateCandidate = existingPortfolio.getCandidate().stream()
-				        .filter(c -> c.getId() == candidate.getId()).findFirst().orElse(null);
-				if (duplicateCandidate == null) {
-					existingPortfolio.getCandidate().add(candidate);
-				} else {
-					throw new InconsistentDataException("Candidate already exists for this portfolio -> [CANDIDATE]."
-					        + candidate.getId() + " :: [PORTFOLIO]." + portfolio.getId());
-				}
-				newPortfolio = portfolioRepository.save(existingPortfolio);
+				candidate = candidateService.getActiveCandidate(candidateId);
+				candidate.getPortfolio().add(existingPortfolio); // Add candidate to portfolio from the main side of the
+				                                                 // many-to-many relationship
+
+				candidate = candidateRepository.save(candidate);
+				newPortfolio = getActivePortfolio(existingPortfolio.getId());
 			} catch (EntryNotFoundException ex) {
 				portfolio.getCandidate().add(candidate);
 				newPortfolio = addPortfolio(portfolio);
@@ -200,6 +195,13 @@ public class PortfolioServiceImpl implements PortfolioService {
 		List<Portfolio> portfolios = portfolioRepository.findAll().stream()
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
 		        .collect(Collectors.toList());
+		
+		// Remove deleted records
+		portfolios.stream().forEach(p -> p.setApplicationUser(p.getApplicationUser().stream()
+		        .filter(u -> u.getVoided() == Lookup.NOT_VOIDED).collect(Collectors.toSet())));
+
+		portfolios.stream().forEach(p -> p.setCandidate(
+		        p.getCandidate().stream().filter(c -> c.getVoided() == Lookup.NOT_VOIDED).collect(Collectors.toSet())));
 		return portfolios;
 	}
 
@@ -217,6 +219,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 	public Portfolio getActivePortfolio(Long portfolioId) throws EntryNotActiveException, EntryNotFoundException {
 		Portfolio portfolio = portfolioRepository.findById(portfolioId).orElse(null);
 		if (portfolio != null && portfolio.getVoided() != Lookup.VOIDED && portfolio.getRetired() != Lookup.RETIRED) {
+			portfolio.setApplicationUser(portfolio.getApplicationUser().stream().filter(u -> u.getVoided() == Lookup.NOT_VOIDED).collect(Collectors.toSet()));
 			return portfolio;
 		} else {
 			if (portfolio == null || portfolio.getVoided() == Lookup.VOIDED) {
