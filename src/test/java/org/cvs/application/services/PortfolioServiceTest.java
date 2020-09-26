@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 
 import org.cvs.application.exceptions.EntryNotActiveException;
 import org.cvs.application.exceptions.EntryNotFoundException;
-import org.cvs.application.exceptions.InconsistentDataException;
 import org.cvs.data.entities.ApplicationUser;
 import org.cvs.data.entities.Candidate;
 import org.cvs.data.entities.Portfolio;
@@ -54,7 +54,7 @@ public class PortfolioServiceTest {
 	Portfolio portfolio, invalidPortfolio, fetchedPortfolio;
 
 	ApplicationUser user;
-	
+
 	Candidate candidate;
 
 	int FALSE = 0;
@@ -78,7 +78,7 @@ public class PortfolioServiceTest {
 
 		// Create a valid candidate
 		candidate = new Candidate("John", "", "Smith");
-		
+
 		candidate.setAddressLine1("Address 1");
 		candidate.setCountry("UK");
 		candidate.setGender("M");
@@ -112,7 +112,7 @@ public class PortfolioServiceTest {
 
 		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio);
 
-		assertTrue(portfolio.getApplicationUser().stream().filter(u -> u.getId() == user.getId()).findFirst()
+		assertTrue(user.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId()).findFirst()
 		        .orElse(null) != null);
 	}
 
@@ -123,9 +123,13 @@ public class PortfolioServiceTest {
 		user = userService.addUser(user);
 
 		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio);
-		assertThrows(InconsistentDataException.class, () -> {
-			portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio);// Duplicate operation
-		});
+		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio);// Duplicate operation
+
+		user = userService.getActiveUser(user.getId());
+		log.info("User has this many portfolios: " + user.getPortfolio().stream()
+		        .filter(p -> p.getId() == portfolio.getId()).collect(Collectors.toList()).size());
+		assertTrue(user.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId()).collect(Collectors.toList())
+		        .size() == 1);
 	}
 
 	@Test
@@ -146,7 +150,7 @@ public class PortfolioServiceTest {
 
 		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio);
 
-		assertTrue(portfolio.getCandidate().stream().filter(c -> c.getId() == candidate.getId()).findFirst()
+		assertTrue(candidate.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId()).findFirst()
 		        .orElse(null) != null);
 	}
 
@@ -157,9 +161,13 @@ public class PortfolioServiceTest {
 		candidate = candidateService.addCandidate(candidate);
 
 		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio);
-		assertThrows(InconsistentDataException.class, () -> {
-			portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio);// Duplicate operation
-		});
+		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio);// Duplicate operation
+
+		log.info("Candidate has this many portfolios: " + candidate.getPortfolio().stream()
+		        .filter(p -> p.getId() == portfolio.getId()).collect(Collectors.toList()).size());
+
+		assertTrue(candidate.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId())
+		        .collect(Collectors.toList()).size() == 1);
 	}
 
 	@Test
@@ -171,9 +179,7 @@ public class PortfolioServiceTest {
 		assertTrue(candidate.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId()).findFirst()
 		        .orElse(null) != null);
 	}
-	
-	
-	
+
 	@Test
 	@WithMockUser
 	public void testFindNonExistentPortfolio() {
