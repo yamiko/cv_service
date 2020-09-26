@@ -1,0 +1,6 @@
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:postgresql://localhost:5555/spring_cv_tests
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.datasource.username=test
+spring.datasource.password=test
+server.error.include-message=always
