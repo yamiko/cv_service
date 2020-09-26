@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.cvs.application.exceptions.EntryNotActiveException;
 import org.cvs.application.exceptions.EntryNotFoundException;
+import org.cvs.application.exceptions.InconsistentDataException;
 import org.cvs.data.entities.Portfolio;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,35 @@ public interface PortfolioService {
 	/**
 	 * Adds a new {@link Portfolio} instance.
 	 *
-	 * @param portfolio a portfolio instance to be added 
+	 * @param portfolio a portfolio instance to be added
 	 * 
 	 * @return a newly added portfolio instance
 	 */
 	public Portfolio addPortfolio(Portfolio portfolio);
+
+	/**
+	 * Adds a new {@link Portfolio} instance with its associated user.
+	 *
+	 * @param userId    an ID for the user that is to be associated with this
+	 *                  portfolio
+	 * @param portfolio a portfolio instance to be updated or added if it does not exist
+	 * 
+	 * @return a newly added or updated portfolio instance
+	 */
+	public Portfolio updatePortfolioWithUser(Long userId, Portfolio portfolio)
+	        throws EntryNotFoundException, EntryNotActiveException, InconsistentDataException;
+
+	/**
+	 * Adds a new {@link Portfolio} instance with its associated candidate.
+	 *
+	 * @param candidateId    an ID for the candidate that is to be associated with this
+	 *                  portfolio
+	 * @param portfolio a portfolio instance to be updated or added if it does not exist
+	 * 
+	 * @return a newly added or updated portfolio instance
+	 */
+	public Portfolio updatePortfolioWithCandidate(Long candidateId, Portfolio portfolio)
+	        throws EntryNotFoundException, EntryNotActiveException, InconsistentDataException;
 
 	/**
 	 * Fetches an active {@link Portfolio} instance given its name.
@@ -64,9 +89,9 @@ public interface PortfolioService {
 	/**
 	 * Fetches all active {@link Portfolio} instances from the database.
 	 *
-	 * @param 
+	 * @param
 	 * 
-	 * @return a list of portfolio instances 
+	 * @return a list of portfolio instances
 	 */
 	public List<Portfolio> getPortfolios();
 }

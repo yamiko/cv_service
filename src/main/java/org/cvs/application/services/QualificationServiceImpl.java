@@ -37,7 +37,8 @@ public class QualificationServiceImpl implements QualificationService {
 	private Validator validator;
 
 	@Override
-	public Qualification addQualification(Qualification qualification) throws EntryNotFoundException, EntryNotActiveException{
+	public Qualification addQualification(Qualification qualification)
+	        throws EntryNotFoundException, EntryNotActiveException {
 
 		Qualification greenQualification = new Qualification();
 
@@ -57,10 +58,17 @@ public class QualificationServiceImpl implements QualificationService {
 			for (ConstraintViolation<Qualification> constraintViolation : violations) {
 				sb.append(" -> " + constraintViolation.getMessage());
 			}
-			
+
 			throw new ConstraintViolationException("Validation error: " + sb.toString(), violations);
-		}		
-		
+		}
+
+		// Only proceed to search for qualification and candidate if we have references
+		if (qualification.getQualificationType() == null || qualification.getCandidate() == null
+		        || qualification.getQualificationType().getId() == null
+		        || qualification.getCandidate().getId() == null) {
+			throw new EntryNotFoundException("Unable to find existing CANDIDATE or QUALIFICATION_TYPE references");
+		}
+
 		Qualification newQualification = new Qualification();
 
 		// Get reference entities
@@ -97,16 +105,6 @@ public class QualificationServiceImpl implements QualificationService {
 		return qualifications;
 	}
 
-/*
-	public Qualification getByQualificationName(String qualificationName) throws EntryNotFoundException {
-
-		Optional<Qualification> qualification = qualificationRepository.findAllByName(qualificationName).stream()
-		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED).findFirst();
-
-		return qualification.orElseThrow(
-		        () -> new EntryNotFoundException("Invalid operation for [QUALIFICATION]." + qualificationName));
-	} */
-
 	@Override
 	public Qualification getActiveQualification(Long qualificationId)
 	        throws EntryNotActiveException, EntryNotFoundException {
@@ -115,7 +113,7 @@ public class QualificationServiceImpl implements QualificationService {
 		        && qualification.getRetired() != Lookup.RETIRED) {
 			return qualification;
 		} else {
-			if (qualification == null) {
+			if (qualification == null || qualification.getVoided() == Lookup.VOIDED) {
 				throw new EntryNotFoundException("Invalid operation for [QUALIFICATION]." + qualificationId);
 			} else {
 				throw new EntryNotActiveException("Invalid operation for [QUALIFICATION]." + qualificationId);

@@ -39,7 +39,8 @@ public interface ApplicationUserService {
 
 	/**
 	 * Fetches a given active {@link ApplicationUser} instance from the database by
-	 * username and returns a default user for auditing publicly accessible resources.
+	 * username and returns a default user for auditing publicly accessible
+	 * resources.
 	 *
 	 * @param userName an identifier to be used in the search criteria
 	 * 
@@ -47,7 +48,6 @@ public interface ApplicationUserService {
 	 */
 	public ApplicationUser getAlwaysByUsername(String userName);
 
-	
 	/**
 	 * Fetches a given {@link ApplicationUser} instance from the database.
 	 *

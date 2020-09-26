@@ -50,13 +50,18 @@ public class SkillServiceImpl implements SkillService {
 			for (ConstraintViolation<Skill> constraintViolation : violations) {
 				sb.append(" -> " + constraintViolation.getMessage());
 			}
-			
+
 			throw new ConstraintViolationException("Validation error: " + sb.toString(), violations);
-		}		
-		
+		}
+
+		// Only proceed to search for a candidate if we have reference
+		if (skill.getCandidate() == null || skill.getCandidate().getId() == null) {
+			throw new EntryNotFoundException("Unable to find existing CANDIDATE reference");
+		}
+
 		Skill newSkill = new Skill();
 
-		// Get a skill entity for the Candidate instance 
+		// Get a skill entity for the Candidate instance
 		Candidate existingCandidate = new Candidate();
 		try {
 			existingCandidate = candidateService.getActiveCandidate(skill.getCandidate().getId());
@@ -72,7 +77,7 @@ public class SkillServiceImpl implements SkillService {
 		// Add the Skill to an existing Candidate instance
 		newSkill.setCandidate(existingCandidate);
 		newSkill = skillRepository.save(newSkill);
-		
+
 		return newSkill;
 	}
 
@@ -91,7 +96,7 @@ public class SkillServiceImpl implements SkillService {
 		if (skill != null && skill.getVoided() != Lookup.VOIDED && skill.getRetired() != Lookup.RETIRED) {
 			return skill;
 		} else {
-			if (skill == null) {
+			if (skill == null || skill.getVoided() == Lookup.VOIDED) {
 				throw new EntryNotFoundException("Invalid operation for [SKILL]." + skillId);
 			} else {
 				throw new EntryNotActiveException("Invalid operation for [SKILL]." + skillId);

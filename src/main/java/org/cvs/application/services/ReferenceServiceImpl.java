@@ -51,7 +51,6 @@ public class ReferenceServiceImpl implements ReferenceService {
 		greenReference.setContactNumber(reference.getContactNumber());
 		greenReference.setEmail(reference.getEmail());
 
-
 		greenReference.setVoided(Lookup.NOT_VOIDED);
 		greenReference.setRetired(Lookup.NOT_RETIRED);
 
@@ -62,13 +61,18 @@ public class ReferenceServiceImpl implements ReferenceService {
 			for (ConstraintViolation<Reference> constraintViolation : violations) {
 				sb.append(" -> " + constraintViolation.getMessage());
 			}
-			
+
 			throw new ConstraintViolationException("Validation error: " + sb.toString(), violations);
-		}		
-		
+		}
+
+		// Only proceed to search for a candidate if we have reference
+		if (reference.getCandidate() == null || reference.getCandidate().getId() == null) {
+			throw new EntryNotFoundException("Unable to find existing CANDIDATE reference");
+		}
+
 		Reference newReference = new Reference();
 
-		// Get a reference entity for the Candidate instance 
+		// Get a reference entity for the Candidate instance
 		Candidate existingCandidate = new Candidate();
 		try {
 			existingCandidate = candidateService.getActiveCandidate(reference.getCandidate().getId());
@@ -84,7 +88,7 @@ public class ReferenceServiceImpl implements ReferenceService {
 		// Add references to an existing Candidate instance
 		newReference.setCandidate(existingCandidate);
 		newReference = referenceRepository.save(newReference);
-		
+
 		return newReference;
 
 	}
@@ -104,7 +108,7 @@ public class ReferenceServiceImpl implements ReferenceService {
 		if (reference != null && reference.getVoided() != Lookup.VOIDED && reference.getRetired() != Lookup.RETIRED) {
 			return reference;
 		} else {
-			if (reference == null) {
+			if (reference == null || reference.getVoided() == Lookup.VOIDED) {
 				throw new EntryNotFoundException("Invalid operation for [REFERENCE]." + referenceId);
 			} else {
 				throw new EntryNotActiveException("Invalid operation for [REFERENCE]." + referenceId);

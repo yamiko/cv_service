@@ -61,7 +61,7 @@ public interface QualificationService {
 	/**
 	 * Lists all active {@link Qualification} instances from the database.
 	 *
-	 * @param 
+	 * @param
 	 * 
 	 * @return a list of active qualification instances
 	 */

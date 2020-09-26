@@ -64,6 +64,11 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 			throw new InconsistentDataException("End Date should be after Start Date ");
 		}
 
+		// Only proceed to search for a candidate if we have reference
+		if (workExperience.getCandidate() == null || workExperience.getCandidate().getId() == null) {
+			throw new EntryNotFoundException("Unable to find existing CANDIDATE reference");
+		}
+
 		WorkExperience newWorkExperience = new WorkExperience();
 
 		// Get a workExperience entity for the Candidate instance
@@ -105,7 +110,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		        && workExperience.getRetired() != Lookup.RETIRED) {
 			return workExperience;
 		} else {
-			if (workExperience == null) {
+			if (workExperience == null || workExperience.getVoided() == Lookup.VOIDED) {
 				throw new EntryNotFoundException("Invalid operation for [WORK_EXPERIENCE]." + workExperienceId);
 			} else {
 				throw new EntryNotActiveException("Invalid operation for [WORK_EXPERIENCE]." + workExperienceId);

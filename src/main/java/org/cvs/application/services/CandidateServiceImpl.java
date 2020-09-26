@@ -29,7 +29,7 @@ public class CandidateServiceImpl implements CandidateService {
 
 	@Autowired
 	private CandidateRepository candidateRepository;
-	
+
 	@Autowired
 	private Validator validator;
 
@@ -45,6 +45,7 @@ public class CandidateServiceImpl implements CandidateService {
 		greenCandidate.setPostcode(candidate.getPostcode());
 
 		greenCandidate.setGender(candidate.getGender());
+		greenCandidate.setDateOfBirth(candidate.getDateOfBirth());
 		greenCandidate.setEmail(candidate.getEmail());
 		greenCandidate.setPreferredContactNumber(candidate.getPreferredContactNumber());
 		greenCandidate.setAlternativeContactNumber(candidate.getAlternativeContactNumber());
@@ -56,8 +57,7 @@ public class CandidateServiceImpl implements CandidateService {
 
 		greenCandidate.setVoided(Lookup.NOT_VOIDED);
 		greenCandidate.setRetired(Lookup.NOT_RETIRED);
-		
-		
+
 		// Validate using Bean constraints
 		Set<ConstraintViolation<Candidate>> violations = validator.validate(greenCandidate);
 		if (!violations.isEmpty()) {
@@ -65,10 +65,10 @@ public class CandidateServiceImpl implements CandidateService {
 			for (ConstraintViolation<Candidate> constraintViolation : violations) {
 				sb.append(" -> " + constraintViolation.getMessage());
 			}
-			
+
 			throw new ConstraintViolationException("Validation error: " + sb.toString(), violations);
-		}		
-		
+		}
+
 		List<Portfolio> portfolios = candidate.getPortfolio().stream().collect(Collectors.toList());
 
 		Candidate newCandidate = new Candidate();
@@ -92,8 +92,6 @@ public class CandidateServiceImpl implements CandidateService {
 
 		return newCandidate;
 	}
-	
- 
 
 	@Override
 	public List<Candidate> getCandidates() {
@@ -110,7 +108,7 @@ public class CandidateServiceImpl implements CandidateService {
 		if (candidate != null && candidate.getVoided() != Lookup.VOIDED && candidate.getRetired() != Lookup.RETIRED) {
 			return candidate;
 		} else {
-			if (candidate == null) {
+			if (candidate == null || candidate.getVoided() == Lookup.VOIDED) {
 				throw new EntryNotFoundException("Invalid operation for [CANDIDATE]." + candidateId);
 			} else {
 				throw new EntryNotActiveException("Invalid operation for [CANDIDATE]." + candidateId);

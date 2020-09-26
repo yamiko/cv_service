@@ -27,8 +27,23 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Reference extends AbstractRetirableEntity {
 
-	@NotBlank(message = "Entry should not be blank")
-	private String name, JobTitle, institution, contactNumber, addressLine1, country;
+	@NotBlank(message = "Name should not be blank")
+	private String name;
+
+	@NotBlank(message = "Job title should not be blank")
+	private String JobTitle;
+
+	@NotBlank(message = "Institution should not be blank")
+	private String institution;
+
+	@NotBlank(message = "Contact number should not be blank")
+	private String contactNumber;
+
+	@NotBlank(message = "Address line 1 should not be blank")
+	private String addressLine1;
+
+	@NotBlank(message = "Country should not be blank")
+	private String country;
 
 	@NotBlank(message = "Email should not be blank")
 	@Email(message = "Invalid email")

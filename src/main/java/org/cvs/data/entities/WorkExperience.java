@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -43,9 +44,11 @@ public class WorkExperience extends AbstractRetirableEntity {
 	private String position;
 
 	@Past(message = "Start date should be in the past")
+	@NotNull(message = "Start date should not be blank")
 	private LocalDate startDate;
 
 	@Past(message = "End date should be in the past")
+	@NotNull(message = "End date should not be blank")
 	private LocalDate endDate;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)

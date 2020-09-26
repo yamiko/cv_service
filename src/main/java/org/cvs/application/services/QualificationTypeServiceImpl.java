@@ -47,9 +47,9 @@ public class QualificationTypeServiceImpl implements QualificationTypeService {
 			for (ConstraintViolation<QualificationType> constraintViolation : violations) {
 				sb.append(" -> " + constraintViolation.getMessage());
 			}
-			
+
 			throw new ConstraintViolationException("Validation error: " + sb.toString(), violations);
-		}		
+		}
 
 		QualificationType newQualificationType = qualificationTypeRepository.save(greenQualificationType);
 		return newQualificationType;
@@ -67,19 +67,22 @@ public class QualificationTypeServiceImpl implements QualificationTypeService {
 	@Override
 	public QualificationType getByQualificationTypeName(String qualificationTypeName) throws EntryNotFoundException {
 
-		Optional<QualificationType> qualificationType = qualificationTypeRepository.findAllByName(qualificationTypeName).stream()
-		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED).findFirst();
+		Optional<QualificationType> qualificationType = qualificationTypeRepository.findAllByName(qualificationTypeName)
+		        .stream().filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED).findFirst();
 
-		return qualificationType.orElseThrow(() -> new EntryNotFoundException("Invalid operation for [QUALIFICATION_TYPE]." + qualificationTypeName));
+		return qualificationType.orElseThrow(() -> new EntryNotFoundException(
+		        "Invalid operation for [QUALIFICATION_TYPE]." + qualificationTypeName));
 	}
 
 	@Override
-	public QualificationType getActiveQualificationType(Long qualificationTypeId) throws EntryNotActiveException, EntryNotFoundException {
+	public QualificationType getActiveQualificationType(Long qualificationTypeId)
+	        throws EntryNotActiveException, EntryNotFoundException {
 		QualificationType qualificationType = qualificationTypeRepository.findById(qualificationTypeId).orElse(null);
-		if (qualificationType != null && qualificationType.getVoided() != Lookup.VOIDED && qualificationType.getRetired() != Lookup.RETIRED) {
+		if (qualificationType != null && qualificationType.getVoided() != Lookup.VOIDED
+		        && qualificationType.getRetired() != Lookup.RETIRED) {
 			return qualificationType;
 		} else {
-			if (qualificationType == null) {
+			if (qualificationType == null || qualificationType.getVoided() == Lookup.VOIDED) {
 				throw new EntryNotFoundException("Invalid operation for [QUALIFICATION_TYPE]." + qualificationTypeId);
 			} else {
 				throw new EntryNotActiveException("Invalid operation for [QUALIFICATION_TYPE]." + qualificationTypeId);

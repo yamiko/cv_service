@@ -57,13 +57,14 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
 
 			throw new ConstraintViolationException("Validation error: " + sb.toString(), violations);
 		}
-		
-		ApplicationUser userByName = userRepository.findAllByUsername(greenUser.getUsername()).stream().filter(p -> p.getVoided() != Lookup.VOIDED).findFirst().orElse(null);
-		
-		if(userByName != null) {
+
+		ApplicationUser userByName = userRepository.findAllByUsername(greenUser.getUsername()).stream()
+		        .filter(p -> p.getVoided() != Lookup.VOIDED).findFirst().orElse(null);
+
+		if (userByName != null) {
 			throw new InconsistentDataException("User name already in use - " + greenUser.getUsername());
 		}
-	
+
 		greenUser.setPassword(passwordEncoder.encode(greenUser.getPassword()));
 		greenUser.setVoided(Lookup.NOT_VOIDED);
 		greenUser.setRetired(Lookup.NOT_RETIRED);
@@ -88,7 +89,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
 	}
 
 	@Override
-	public ApplicationUser getAlwaysByUsername(String username){
+	public ApplicationUser getAlwaysByUsername(String username) {
 
 		ApplicationUser user = null;
 		try {
@@ -106,7 +107,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
 		if (user != null && user.getVoided() != Lookup.VOIDED && user.getRetired() != Lookup.RETIRED) {
 			return user;
 		} else {
-			if (user == null) {
+			if (user == null || user.getVoided() == Lookup.VOIDED) {
 				throw new EntryNotFoundException("Invalid operation for [USER]." + userId);
 			} else {
 				throw new EntryNotActiveException("Invalid operation for [USER]." + userId);
@@ -139,15 +140,17 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
 			throw new EntryNotFoundException("Invalid operation for [USER]." + userId);
 		}
 	}
-	
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ApplicationUser user = userRepository.findAllByUsername(username).stream().filter(u -> u.getVoided() != Lookup.VOIDED && u.getRetired() != Lookup.RETIRED ).findFirst().orElse(null);
 
-        if(user == null)   {
-            throw new UsernameNotFoundException(username);
-        }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		ApplicationUser user = userRepository.findAllByUsername(username).stream()
+		        .filter(u -> u.getVoided() != Lookup.VOIDED && u.getRetired() != Lookup.RETIRED).findFirst()
+		        .orElse(null);
 
-        return new User(user.getUsername(), user.getPassword(), Collections.emptyList());
-    }
+		if (user == null) {
+			throw new UsernameNotFoundException(username);
+		}
+
+		return new User(user.getUsername(), user.getPassword(), Collections.emptyList());
+	}
 }

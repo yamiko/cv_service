@@ -12,6 +12,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 
@@ -63,6 +64,7 @@ public class Candidate extends AbstractRetirableEntity {
 	        postcode;
 
 	@Past(message = "Date of birth should be in the past")
+	@NotNull(message = "Date of birth should not be blank")
 	private LocalDate dateOfBirth;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })

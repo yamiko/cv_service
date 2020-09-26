@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -42,7 +43,8 @@ public class Qualification extends AbstractRetirableEntity {
 	@NotBlank(message = "Country should not be blank")
 	private String country;
 
-	@Past(message = "Date otained should be in the past")
+	@Past(message = "Date obtained should be in the past")
+	@NotNull(message = "Local date should not be blank")
 	private LocalDate dateObtained;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
