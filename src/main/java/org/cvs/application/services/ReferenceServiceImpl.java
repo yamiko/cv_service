@@ -1,5 +1,6 @@
 package org.cvs.application.services;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -99,6 +100,8 @@ public class ReferenceServiceImpl implements ReferenceService {
 		List<Reference> references = referenceRepository.findAll().stream()
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
 		        .collect(Collectors.toList());
+		
+		references.sort(Comparator.comparing(Reference::getId));
 		return references;
 	}
 
@@ -107,6 +110,7 @@ public class ReferenceServiceImpl implements ReferenceService {
 		List<Reference> references = referenceRepository.findAll().stream().filter(p -> p.getVoided() != Lookup.VOIDED
 		        && p.getRetired() != Lookup.RETIRED && p.getCandidate().getId().longValue() == candidateId)
 		        .collect(Collectors.toList());
+		references.sort(Comparator.comparing(Reference::getId));
 		return references;
 	}
 

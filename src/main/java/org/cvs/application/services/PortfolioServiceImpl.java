@@ -189,6 +189,8 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 		portfolios.stream().forEach(p -> p.setCandidate(
 		        p.getCandidate().stream().filter(c -> c.getVoided() == Lookup.NOT_VOIDED).collect(Collectors.toSet())));
+
+		portfolios.sort(Comparator.comparing(Portfolio::getId));
 		return portfolios;
 	}
 
@@ -207,7 +209,6 @@ public class PortfolioServiceImpl implements PortfolioService {
 		        p.getCandidate().stream().filter(c -> c.getVoided() == Lookup.NOT_VOIDED).collect(Collectors.toSet())));
 
 		portfolios.sort(Comparator.comparing(Portfolio::getId));
-
 		return portfolios;
 	}
 

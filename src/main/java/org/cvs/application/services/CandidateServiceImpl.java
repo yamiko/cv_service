@@ -1,5 +1,6 @@
 package org.cvs.application.services;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -99,6 +100,7 @@ public class CandidateServiceImpl implements CandidateService {
 		List<Candidate> candidates = candidateRepository.findAll().stream()
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
 		        .collect(Collectors.toList());
+		candidates.sort(Comparator.comparing(Candidate::getId));
 		return candidates;
 	}
 
@@ -110,6 +112,7 @@ public class CandidateServiceImpl implements CandidateService {
 		                && (p.getPortfolio().stream().filter(q -> q.getId().longValue() == portfolioId).findFirst()
 		                        .orElse(new Portfolio()).getId().longValue() == portfolioId))
 		        .collect(Collectors.toList());
+		candidates.sort(Comparator.comparing(Candidate::getId));
 		return candidates;
 	}
 

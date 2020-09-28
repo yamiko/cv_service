@@ -1,5 +1,6 @@
 package org.cvs.application.services;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,6 +99,8 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		List<WorkExperience> workExperiences = workExperienceRepository.findAll().stream()
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
 		        .collect(Collectors.toList());
+		
+		workExperiences.sort(Comparator.comparing(WorkExperience::getId));
 		return workExperiences;
 	}
 
@@ -107,6 +110,8 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED
 		                && p.getCandidate().getId().longValue() == candidateId)
 		        .collect(Collectors.toList());
+
+		workExperiences.sort(Comparator.comparing(WorkExperience::getId));
 		return workExperiences;
 	}
 

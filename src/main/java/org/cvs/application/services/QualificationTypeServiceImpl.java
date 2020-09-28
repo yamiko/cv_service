@@ -1,5 +1,6 @@
 package org.cvs.application.services;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -61,6 +62,8 @@ public class QualificationTypeServiceImpl implements QualificationTypeService {
 		List<QualificationType> qualificationTypes = qualificationTypeRepository.findAll().stream()
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
 		        .collect(Collectors.toList());
+		
+		qualificationTypes.sort(Comparator.comparing(QualificationType::getId));
 		return qualificationTypes;
 	}
 
