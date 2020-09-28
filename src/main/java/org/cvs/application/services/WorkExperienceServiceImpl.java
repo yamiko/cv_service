@@ -99,7 +99,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		List<WorkExperience> workExperiences = workExperienceRepository.findAll().stream()
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
 		        .collect(Collectors.toList());
-		
+		log.info("Listing");
 		workExperiences.sort(Comparator.comparing(WorkExperience::getId));
 		return workExperiences;
 	}

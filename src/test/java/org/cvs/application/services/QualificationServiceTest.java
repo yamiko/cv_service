@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestPropertySource(properties = { "spring.jpa.hibernate.ddl-auto=validate" })
+//@TestPropertySource(properties = { "spring.jpa.hibernate.ddl-auto=validate" })
 public class QualificationServiceTest {
 
 	@Autowired
