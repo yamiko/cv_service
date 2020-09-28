@@ -20,7 +20,8 @@ import lombok.ToString;
 
 /**
  * 
- * Defines structure and relationship(s) for the <code>qualification</code> table.
+ * Defines structure and relationship(s) for the <code>qualification</code>
+ * table.
  * 
  * @author Yamiko J. Msosa
  * @version 1.0
@@ -31,12 +32,12 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id")
 public class Qualification extends AbstractRetirableEntity {
 
 	@NotBlank(message = "Name should not be blank")
 	private String name;
-	
+
 	@NotBlank(message = "Institution should not be blank")
 	private String institution;
 
@@ -47,11 +48,11 @@ public class Qualification extends AbstractRetirableEntity {
 	@NotNull(message = "Local date should not be blank")
 	private LocalDate dateObtained;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-	private Candidate candidate = new Candidate();
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Candidate candidate;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-	private QualificationType qualificationType = new QualificationType();
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private QualificationType qualificationType;
 
 	public Qualification(String name, String institution, String country, LocalDate dateObtained) {
 		final int FALSE = 0;

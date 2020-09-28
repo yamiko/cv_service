@@ -81,4 +81,14 @@ public interface ApplicationUserService {
 	 * @return list of active application users from the database
 	 */
 	public List<ApplicationUser> getUsers();
+
+	/**
+	 * Fetches all active {@link ApplicationUser} instances for a specific portfolio
+	 * from the database.
+	 *
+	 * @param portfolioId the ID of the portfolio to filter users for
+	 * 
+	 * @return list of active application users from the database
+	 */
+	public List<ApplicationUser> getUsers(Long portfolioId);
 }

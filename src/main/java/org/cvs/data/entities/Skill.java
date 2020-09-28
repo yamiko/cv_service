@@ -29,8 +29,8 @@ public class Skill extends AbstractRetirableEntity {
 	@NotBlank(message = "Description should not be blank")
 	private String description;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-	private Candidate candidate = new Candidate();
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Candidate candidate;
 
 	public Skill(String description) {
 		final int FALSE = 0;

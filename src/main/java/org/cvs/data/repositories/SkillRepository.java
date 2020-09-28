@@ -20,9 +20,10 @@ public interface SkillRepository extends CrudRepository<Skill, Long> {
 	/**
 	 * Returns an optional {@link Skill} given its ID.
 	 *
-	 * @param id	key to be used in the search criteria
+	 * @param id key to be used in the search criteria
 	 * 
-	 * @return	an optional skill instance from the database that matches the search criteria 
+	 * @return an optional skill instance from the database that matches the search
+	 *         criteria
 	 */
 	Optional<Skill> findById(Long id);
 
@@ -40,7 +41,7 @@ public interface SkillRepository extends CrudRepository<Skill, Long> {
 	 *
 	 * @param
 	 * 
-	 * @return	a list of all skill instances from the database
+	 * @return a list of all skill instances from the database
 	 */
 	List<Skill> findAll();
 

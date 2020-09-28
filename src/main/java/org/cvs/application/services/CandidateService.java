@@ -60,4 +60,14 @@ public interface CandidateService {
 	 * @return list of active candidate instances
 	 */
 	public List<Candidate> getCandidates();
+
+	/**
+	 * Fetches all active {@link Candidate} instances for a specified portfolio from
+	 * the database.
+	 *
+	 * @param portfolioId the ID of the portfolio to filter candidates for
+	 * 
+	 * @return list of active candidate instances
+	 */
+	public List<Candidate> getCandidates(Long portfolioId);
 }

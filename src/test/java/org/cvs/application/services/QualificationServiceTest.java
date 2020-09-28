@@ -50,7 +50,7 @@ public class QualificationServiceTest {
 	@Autowired
 	QualificationTypeService qualificationTypeService;
 
-	Qualification qualification, invalidQualification, fetchedQualification;
+	Qualification qualification, qualification2, invalidQualification, fetchedQualification;
 	
 	Candidate candidate;
 	
@@ -60,11 +60,14 @@ public class QualificationServiceTest {
 	
 	@BeforeEach
     void init() {
-		// Create a valid qualification
+		// Create valid qualifications
 		qualification = new Qualification("PhD in Computer Science", "University of Essex", "UK", LocalDate.of(2016, Month.JUNE, 15));
-		
 		qualification.setRetired(Lookup.NOT_RETIRED);
 		qualification.setVoided(Lookup.NOT_VOIDED);
+
+		qualification2 = new Qualification("PhD in Chemistry", "University of Kent", "UK", LocalDate.of(2016, Month.JUNE, 15));
+		qualification2.setRetired(Lookup.NOT_RETIRED);
+		qualification2.setVoided(Lookup.NOT_VOIDED);
 
 		//Create an invalid qualification
 		invalidQualification = new Qualification("", "", "", LocalDate.of(2080, Month.JUNE, 15));
@@ -91,6 +94,25 @@ public class QualificationServiceTest {
 		candidate.setVoided(Lookup.NOT_VOIDED);
 	}
 
+
+	@Test
+	@WithMockUser
+	public void testGetQualifications() {
+		candidate = candidateService.addCandidate(candidate);
+		qualificationType = qualificationTypeService.addQualificationType(qualificationType);
+		
+		qualification.setCandidate(candidate);
+		qualification.setQualificationType(qualificationType);
+		qualification = qualificationService.addQualification(qualification);
+
+		qualification2.setCandidate(candidate);
+		qualification2.setQualificationType(qualificationType);
+		qualificationService.addQualification(qualification2);
+		
+		assertTrue(qualificationService.getQualifications().size() == 2);
+	}
+
+	
 	@Test
 	@WithMockUser
 	public void testAddQualification() {

@@ -36,6 +36,15 @@ public interface CandidateRepository extends CrudRepository<Candidate, Long> {
 	<S extends Candidate> S save(S candidate);
 
 	/**
+	 * Persists and flushes a given {@link Candidate} instance.
+	 *
+	 * @param candidate the candidate instance to be persisted in the database
+	 * 
+	 * @return the candidate that has been persisted in this operation
+	 */
+	<S extends Candidate> S saveAndFlush(S candidate);
+
+	/**
 	 * Returns all {@link Candidate}s from the database.
 	 *
 	 * @param

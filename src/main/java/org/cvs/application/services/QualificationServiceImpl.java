@@ -98,9 +98,17 @@ public class QualificationServiceImpl implements QualificationService {
 
 	@Override
 	public List<Qualification> getQualifications() {
-
 		List<Qualification> qualifications = qualificationRepository.findAll().stream()
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
+		        .collect(Collectors.toList());
+		return qualifications;
+	}
+
+	@Override
+	public List<Qualification> getQualifications(Long candidateId) {
+		List<Qualification> qualifications = qualificationRepository.findAll().stream()
+		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED
+		                && p.getCandidate().getId().longValue() == candidateId)
 		        .collect(Collectors.toList());
 		return qualifications;
 	}

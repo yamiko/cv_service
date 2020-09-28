@@ -31,18 +31,18 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAuditedEntity {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id = -1L;
 
-	@CreatedDate 
+	@CreatedDate
 	private LocalDateTime createdDate;
 
-	@CreatedBy 
+	@CreatedBy
 	private String createdBy;
-	
-	@LastModifiedDate 
+
+	@LastModifiedDate
 	private LocalDateTime modifiedDate;
 
-	@LastModifiedBy 
+	@LastModifiedBy
 	private String lastModifiedBy;
 }

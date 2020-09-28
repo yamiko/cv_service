@@ -20,7 +20,8 @@ import lombok.ToString;
 
 /**
  * 
- * Defines structure and relationship(s) for the <code>work_experience</code> table.
+ * Defines structure and relationship(s) for the <code>work_experience</code>
+ * table.
  * 
  * @author Yamiko J. Msosa
  * @version 1.0
@@ -58,11 +59,11 @@ public class WorkExperience extends AbstractRetirableEntity {
 	 * 
 	 * Convenient constructor for {@link WorkExperience}.
 	 * 
-	 * @param	organisation	the organisation where the referee is based	
-	 * @param	country			the country that depicts the home base for the referee
-	 * @param	position		current position or job title for the referee
+	 * @param organisation the organisation where the referee is based
+	 * @param country      the country that depicts the home base for the referee
+	 * @param position     current position or job title for the referee
 	 *
-	 */	
+	 */
 	public WorkExperience(String organisation, String country, String position) {
 		final int FALSE = 0;
 

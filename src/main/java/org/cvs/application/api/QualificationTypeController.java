@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -63,13 +63,13 @@ public class QualificationTypeController {
 	/**
 	 * 
 	 * Fetches an active qualificationType via GET through URL:
-	 * <code>/qualificationTypes/active</code>.
+	 * <code>/qualification/types/active/{qualificationTypeId}</code>.
 	 * <p>
 	 * 
 	 * Example URL:
 	 * 
 	 * <code> 
-	 *  /qualificationTypes/active?userId=1
+	 *  /qualification/types/active/{qualificationTypeId}
 	 * </code>
 	 * 
 	 * @param qualificationTypeId the qualificationType ID as a request parameter to
@@ -77,8 +77,8 @@ public class QualificationTypeController {
 	 * 
 	 * @return an active qualificationType if found
 	 */
-	@GetMapping(path = "/active")
-	public @ResponseBody QualificationType getQualificationType(@RequestParam Long qualificationTypeId) {
+	@GetMapping(path = "/active/{qualificationTypeId}")
+	public @ResponseBody QualificationType getQualificationType(@PathVariable Long qualificationTypeId) {
 		try {
 			QualificationType qualificationType = qualificationTypeService
 			        .getActiveQualificationType(qualificationTypeId);
@@ -93,27 +93,25 @@ public class QualificationTypeController {
 	/**
 	 * 
 	 * Deletes a qualification type via DELETE method through URL:
-	 * <code>/qualifications/types</code>.
+	 * <code>/qualifications/types/{qualificationTypeId}</code>.
 	 * <p>
 	 * 
-	 * Example payload:
+	 * Example URL:
 	 * 
 	 * <code> 
-	 * {
-	 *     "id" : 1
-	 * }
+	 *  /qualification/types/1
 	 * </code>
 	 * 
-	 * @param qualificationType the qualification type (can be a JSON payload) to be
-	 *                          deleted from the system.
+	 * @param qualificationTypeId the ID of the qualification type (can be a JSON
+	 *                            payload) to be deleted from the system.
 	 * 
 	 * @return a string that says 'Deleted'
 	 * 
 	 */
-	@DeleteMapping(path = "")
-	public @ResponseBody String deleteQualificationType(@RequestBody QualificationType qualificationType) {
+	@DeleteMapping(path = "/{qualificationTypeId}")
+	public @ResponseBody String deleteQualificationType(@PathVariable Long qualificationTypeId) {
 		try {
-			qualificationTypeService.deleteQualificationType(qualificationType.getId());
+			qualificationTypeService.deleteQualificationType(qualificationTypeId);
 			return "Deleted";
 		} catch (EntryNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -123,27 +121,25 @@ public class QualificationTypeController {
 	/**
 	 * 
 	 * Retires an qualification type via POST through URL:
-	 * <code>/qualifications/types/retire</code>.
+	 * <code>/qualifications/types/retire/{qualificationTypeId}</code>.
 	 * <p>
 	 * 
 	 * Example payload:
 	 * 
 	 * <code> 
-	 * {
-	 *     "id" : 1
-	 * }
+	 *  /qualification/types/retire/{qualificationTypeId}
 	 * </code>
 	 * 
-	 * @param qualificationType the qualification type (can be a JSON payload) to be
-	 *                          retired from the system.
+	 * @param qualificationTypeId the ID of the qualification type to be retired
+	 *                            from the system.
 	 * 
 	 * @return a string that says 'Retired'
 	 */
-	@PostMapping(path = "/retire")
-	public @ResponseBody String retireQualificationType(@RequestBody QualificationType qualificationType) {
+	@PostMapping(path = "/retire/{qualificationTypeId}")
+	public @ResponseBody String retireQualificationType(@PathVariable Long qualificationTypeId) {
 
 		try {
-			qualificationTypeService.retireQualificationType(qualificationType.getId());
+			qualificationTypeService.retireQualificationType(qualificationTypeId);
 			return "Retired";
 		} catch (EntryNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -154,13 +150,13 @@ public class QualificationTypeController {
 	/**
 	 * 
 	 * Fetches all active qualification types via GET through URL:
-	 * <code>/qualifications/types/all</code>.
+	 * <code>/qualifications</code>.
 	 * 
 	 * @return a list of all active qualification types in JSON or XML depending on
 	 *         client preferences
 	 * 
 	 */
-	@GetMapping(path = "/all")
+	@GetMapping(path = "")
 	public @ResponseBody Iterable<QualificationType> getAllQualificationTypes() {
 		// This returns a JSON or XML with the qualificationTypes
 		return qualificationTypeService.getQualificationTypes();

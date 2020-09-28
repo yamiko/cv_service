@@ -103,6 +103,17 @@ public class CandidateServiceImpl implements CandidateService {
 	}
 
 	@Override
+	public List<Candidate> getCandidates(Long portfolioId) {
+
+		List<Candidate> candidates = candidateRepository.findAll().stream()
+		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED
+		                && (p.getPortfolio().stream().filter(q -> q.getId().longValue() == portfolioId).findFirst()
+		                        .orElse(new Portfolio()).getId().longValue() == portfolioId))
+		        .collect(Collectors.toList());
+		return candidates;
+	}
+
+	@Override
 	public Candidate getActiveCandidate(Long candidateId) throws EntryNotActiveException, EntryNotFoundException {
 		Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
 		if (candidate != null && candidate.getVoided() != Lookup.VOIDED && candidate.getRetired() != Lookup.RETIRED) {

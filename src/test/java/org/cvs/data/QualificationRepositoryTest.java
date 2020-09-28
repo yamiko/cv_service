@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -45,17 +46,20 @@ public class QualificationRepositoryTest {
 	@Autowired
 	private Validator validator;
 
-	Qualification qualification, invalidQualification, fetchedQualification;
+	Qualification qualification, qualification2, invalidQualification, fetchedQualification;
 
 	int FALSE = 0;
 	
 	@BeforeEach
     void init() {
-		// Create a valid qualification
+		// Create valid qualifications
 		qualification = new Qualification("PhD in Computer Science", "University of Essex", "UK", LocalDate.of(2016, Month.JUNE, 15));
-		
 		qualification.setRetired(Lookup.NOT_RETIRED);
 		qualification.setVoided(Lookup.NOT_VOIDED);
+
+		qualification2 = new Qualification("PhD in Chemistry", "University of Kent", "UK", LocalDate.of(2016, Month.JUNE, 15));
+		qualification2.setRetired(Lookup.NOT_RETIRED);
+		qualification2.setVoided(Lookup.NOT_VOIDED);
 
 		//Create an invalid qualification
 		invalidQualification = new Qualification("", "", "", LocalDate.of(2080, Month.JUNE, 15));
@@ -64,6 +68,17 @@ public class QualificationRepositoryTest {
 		invalidQualification.setVoided(Lookup.NOT_VOIDED);
 	}
 
+	@Test
+	@WithMockUser
+	public void testGetQualifications() {
+		qualification = repository.save(qualification);
+		qualification2 = repository.save(qualification2);
+		List <Qualification> qualifications = repository.findAll(); 
+
+		assertTrue(qualifications.size() == 2);
+	}
+
+	
 	@Test
 	@WithMockUser
 	public void testAddQualification() {

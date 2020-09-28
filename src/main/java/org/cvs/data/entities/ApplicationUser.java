@@ -23,7 +23,8 @@ import lombok.ToString;
  * 
  * DTO for an application user.
  * <p>
- * It also defines structure and relationship(s) for the <code>application_user</code> table in the DB.
+ * It also defines structure and relationship(s) for the
+ * <code>application_user</code> table in the DB.
  * 
  * @author Yamiko J. Msosa
  * @version 1.0
@@ -34,31 +35,31 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id")
 public class ApplicationUser extends AbstractRetirableEntity {
 
 	@NotBlank(message = "User name should not be blank")
 	private String username;
-	
+
 	@NotBlank(message = "Password should not be blank")
 	private String password;
-	
+
 	@NotBlank(message = "Full name should not be blank")
 	private String fullName;
-																																																																																																																																																																																																			
+
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "application_user_portfolio", joinColumns = @JoinColumn(name = "application_user_id"), inverseJoinColumns = @JoinColumn(name = "portfolio_id"))
-	private Set<Portfolio> portfolio = new HashSet<>();																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
+	private Set<Portfolio> portfolio = new HashSet<>();
 
 	/**
 	 * 
 	 * Convenient constructor for {@link ApplicationUser}.
 	 * 
-	 * @param	username	username for the application user	
-	 * @param	password	password for the application user
-	 * @param	fullName	full name for the application user
+	 * @param username username for the application user
+	 * @param password password for the application user
+	 * @param fullName full name for the application user
 	 *
-	 */		
+	 */
 	public ApplicationUser(String username, String password, String fullName) {
 		final int FALSE = 0;
 
@@ -68,5 +69,5 @@ public class ApplicationUser extends AbstractRetirableEntity {
 		this.setRetired(FALSE);
 		this.setVoided(FALSE);
 	}
-	
+
 }

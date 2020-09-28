@@ -29,29 +29,29 @@ public interface PortfolioService {
 	public Portfolio addPortfolio(Portfolio portfolio);
 
 	/**
-	 * Adds a new {@link Portfolio} instance with its associated user.
+	 * Updates a {@link Portfolio} instance with its associated user.
 	 *
-	 * @param userId    an ID for the user that is to be associated with this
-	 *                  portfolio
-	 * @param portfolio a portfolio instance to be updated or added if it does not
-	 *                  exist
+	 * @param userId      an ID for the user that is to be associated with this
+	 *                    portfolio
+	 * @param portfolioId an ID of the portfolio instance to be associated with the
+	 *                    specified user
 	 * 
-	 * @return a newly added or updated portfolio instance
+	 * @return a newly associated portfolio instance
 	 */
-	public Portfolio updatePortfolioWithUser(Long userId, Portfolio portfolio)
+	public Portfolio updatePortfolioWithUser(Long userId, Long portfolioId)
 	        throws EntryNotFoundException, EntryNotActiveException;
 
 	/**
-	 * Adds a new {@link Portfolio} instance with its associated candidate.
+	 * Updates a {@link Portfolio} instance with its associated candidate.
 	 *
 	 * @param candidateId an ID for the candidate that is to be associated with this
 	 *                    portfolio
-	 * @param portfolio   a portfolio instance to be updated or added if it does not
-	 *                    exist
+	 * @param portfolioId an ID of the portfolio instance to be associated with the
+	 *                    specified candidate
 	 * 
-	 * @return a newly added or updated portfolio instance
+	 * @return a newly associated portfolio instance
 	 */
-	public Portfolio updatePortfolioWithCandidate(Long candidateId, Portfolio portfolio)
+	public Portfolio updatePortfolioWithCandidate(Long candidateId, Long portfolioId)
 	        throws EntryNotFoundException, EntryNotActiveException;
 
 	/**
@@ -96,4 +96,14 @@ public interface PortfolioService {
 	 * @return a list of portfolio instances
 	 */
 	public List<Portfolio> getPortfolios();
+
+	/**
+	 * Fetches all active {@link Portfolio} instances for the specified application
+	 * user from the database.
+	 *
+	 * @param userId the user ID to filter portfolios for
+	 * 
+	 * @return a list of portfolio instances
+	 */
+	public List<Portfolio> getPortfolios(Long userId);
 }

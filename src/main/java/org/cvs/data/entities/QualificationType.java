@@ -10,7 +10,8 @@ import lombok.ToString;
 
 /**
  * 
- * Defines structure and relationship(s) for the <code>qualification_type</code> table.
+ * Defines structure and relationship(s) for the <code>qualification_type</code>
+ * table.
  * 
  * @author Yamiko J. Msosa
  * @version 1.0
@@ -29,7 +30,7 @@ public class QualificationType extends AbstractRetirableEntity {
 	public QualificationType(String name) {
 		final int FALSE = 0;
 
-		this.name = name;	
+		this.name = name;
 		this.setRetired(FALSE);
 		this.setVoided(FALSE);
 	}

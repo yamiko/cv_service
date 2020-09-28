@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,6 +18,7 @@ import org.cvs.application.exceptions.EntryNotActiveException;
 import org.cvs.application.exceptions.EntryNotFoundException;
 import org.cvs.application.services.QualificationService;
 import org.cvs.data.entities.Qualification;
+import org.cvs.data.entities.Skill;
 
 @Controller // This means that this class is a Controller
 @RequestMapping(path = "/qualifications") // This means URL's start with /demo (after Application path)
@@ -36,21 +37,21 @@ public class QualificationController {
 	 * 
 	 * <code> 
 	 * {
-     *   "name": "PhD in Agroforestry",
-     *   "institution": "university of Texas",
-     *   "country": "USA",
-     *   "dateObtained": "2008-06-15",
-     *   "candidate": {"id": 111},
-     *   "qualificationType" : {"id": 98}
-     *  }
+	 *   "name": "PhD in Agroforestry",
+	 *   "institution": "university of Texas",
+	 *   "country": "USA",
+	 *   "dateObtained": "2008-06-15",
+	 *   "candidate": {"id": 111},
+	 *   "qualificationType" : {"id": 98}
+	 *  }
 	 * </code>
 	 * 
-	 * @param qualification the qualification (can be a JSON payload) to be added to the
-	 *                  system.
+	 * @param qualification the qualification (can be a JSON payload) to be added to
+	 *                      the system.
 	 * 
 	 * @return the newly added qualification
 	 */
-	@PostMapping(path = "") 
+	@PostMapping(path = "")
 	public @ResponseBody Qualification addNewApplicationQualification(@RequestBody Qualification qualification) {
 		try {
 			Qualification newqualification = qualificationService.addQualification(qualification);
@@ -67,22 +68,21 @@ public class QualificationController {
 	/**
 	 * 
 	 * Fetches an active qualification via GET through URL:
-	 * <code>/qualifications/active</code>.
+	 * <code>/qualifications/active/{qualificationId}</code>.
 	 * <p>
 	 * 
 	 * Example URL:
 	 * 
 	 * <code> 
-	 *  /qualifications/active?userId=1
+	 *  /qualifications/active/1
 	 * </code>
 	 * 
-	 * @param qualificationId the qualification ID as a request parameter to be used in the
-	 *                    query
+	 * @param qualificationId the qualification ID to be used in the query
 	 * 
 	 * @return an active qualification if found
-	 */	
+	 */
 	@GetMapping(path = "/active")
-	public @ResponseBody Qualification getQualification(@RequestParam Long qualificationId) {
+	public @ResponseBody Qualification getQualification(@PathVariable Long qualificationId) {
 		try {
 			Qualification qualification = qualificationService.getActiveQualification(qualificationId);
 			return qualification;
@@ -95,26 +95,26 @@ public class QualificationController {
 
 	/**
 	 * 
-	 * Deletes a qualification via DELETE method through base URL: <code>/qualifications</code>.
+	 * Deletes a qualification via DELETE method through base URL:
+	 * <code>/qualifications/{qualificationId}</code>.
 	 * <p>
 	 * 
-	 * Example payload:
+	 * Example URL:
 	 * 
 	 * <code> 
-	 * {
-	 *     "id" : 1
-	 * }
+	 *  /qualifications/1
 	 * </code>
 	 * 
-	 * @param qualification the qualification (can be a JSON payload) to be deleted from the system.
+	 * @param qualificationId the qualification ID of the qualification to be
+	 *                        deleted from the system.
 	 * 
 	 * @return a string that says 'Deleted'
 	 * 
-	 */	
-	@DeleteMapping(path = "")
-	public @ResponseBody String deleteQualification(@RequestBody Qualification qualification) {
+	 */
+	@DeleteMapping(path = "/{qualificationId}")
+	public @ResponseBody String deleteQualification(@PathVariable Long qualificationId) {
 		try {
-			qualificationService.deleteQualification(qualification.getId());
+			qualificationService.deleteQualification(qualificationId);
 			return "Deleted";
 		} catch (EntryNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -123,27 +123,27 @@ public class QualificationController {
 
 	/**
 	 * 
-	 * Retires a qualification via POST through URL: <code>/qualifications/retire</code>.
+	 * Retires a qualification via POST through URL:
+	 * <code>/qualifications/retire/{qualificationId}</code>.
 	 * <p>
 	 * 
-	 * Example payload:
+	 * Example URL:
 	 * 
 	 * <code> 
-	 * {
-	 *     "id" : 1
-	 * }
+	 *  /qualifications/retire/1
 	 * </code>
 	 * 
-	 * @param qualification the qualification (can be a JSON payload) to be retired from the system.
+	 * @param qualificationId the ID of the qualification that is to be retired from
+	 *                        the system.
 	 * 
 	 * @return a string that says 'Retired'
 	 * 
 	 */
-	@PostMapping(path = "/retire")
-	public @ResponseBody String retireQualification(@RequestParam Qualification qualification) {
+	@PostMapping(path = "/retire/{qualificationId}")
+	public @ResponseBody String retireQualification(@PathVariable Long qualificationId) {
 
 		try {
-			qualificationService.retireQualification(qualification.getId());
+			qualificationService.retireQualification(qualificationId);
 			return "Retired";
 		} catch (EntryNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -154,14 +154,33 @@ public class QualificationController {
 	/**
 	 * 
 	 * Fetches all active qualifications via GET through URL:
-	 * <code>/qualifications/all</code>.
+	 * <code>/qualifications</code>.
 	 * 
-	 * @return a list of all active qualifications 
+	 * @return a list of all active qualifications
 	 *
 	 */
-	@GetMapping(path = "/all")
+	@GetMapping(path = "")
 	public @ResponseBody Iterable<Qualification> getAllQualifications() {
 		// This returns a JSON or XML with the qualifications
 		return qualificationService.getQualifications();
 	}
+
+	/**
+	 * 
+	 * Fetches all active qualification entries via GET through URL:
+	 * <code>/qualifications/candidate/{candidateId}</code>.
+	 * 
+	 * @param candidateId the ID of the candidate ID to filter work experience
+	 *                    entries for.
+	 * 
+	 * @return a list of all active qualifications entries for a particular
+	 *         candidate
+	 * 
+	 */
+	@GetMapping(path = "/candidate/{candidateId}")
+	public @ResponseBody Iterable<Qualification> getQualifications(@PathVariable Long candidateId) {
+		// This returns a JSON or XML with the workExperiences
+		return qualificationService.getQualifications(candidateId);
+	}
+
 }

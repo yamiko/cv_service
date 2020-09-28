@@ -20,18 +20,18 @@ public interface ReferenceRepository extends CrudRepository<Reference, Long> {
 	/**
 	 * Returns an optional {@link Reference} given its ID.
 	 *
-	 * @param id	the identifier to be used as a key in the search criteria
+	 * @param id the identifier to be used as a key in the search criteria
 	 * 
-	 * @return	a reference instance that matches a search criteria from the database 
+	 * @return a reference instance that matches a search criteria from the database
 	 */
 	Optional<Reference> findById(Long id);
 
 	/**
 	 * Saves the given {@link Reference} instance to the database.
 	 *
-	 * @param reference	a reference instance to be saved in the database
+	 * @param reference a reference instance to be saved in the database
 	 * 
-	 * @return	a reference instance that was saved in the database
+	 * @return a reference instance that was saved in the database
 	 */
 	<S extends Reference> S save(S reference);
 
@@ -40,7 +40,7 @@ public interface ReferenceRepository extends CrudRepository<Reference, Long> {
 	 *
 	 * @param
 	 * 
-	 * @return	a list of all reference instances from the database
+	 * @return a list of all reference instances from the database
 	 */
 	List<Reference> findAll();
 }

@@ -22,7 +22,7 @@ public interface WorkExperienceRepository extends CrudRepository<WorkExperience,
 	 *
 	 * @param id ID field user as a key for the search operation
 	 * 
-	 * @return	an optional work experience instance
+	 * @return an optional work experience instance
 	 */
 	Optional<WorkExperience> findById(Long id);
 

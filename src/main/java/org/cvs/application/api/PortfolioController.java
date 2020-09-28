@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import javax.validation.ConstraintViolationException;
 import org.cvs.application.exceptions.EntryNotActiveException;
 import org.cvs.application.exceptions.EntryNotFoundException;
 import org.cvs.application.services.PortfolioService;
+import org.cvs.data.entities.Candidate;
 import org.cvs.data.entities.Portfolio;
 
 @Controller // This means that this class is a Controller
@@ -64,13 +66,13 @@ public class PortfolioController {
 	/**
 	 * 
 	 * Fetches an active portfolio via GET through URL:
-	 * <code>/portfolios/active</code>.
+	 * <code>/portfolios/active/{portfolioId}</code>.
 	 * <p>
 	 * 
 	 * Example URL:
 	 * 
 	 * <code> 
-	 *  /portfolios/active?portfolioId=1
+	 *  /portfolios/active/1
 	 * </code>
 	 * 
 	 * @param portfolioId the portfolio ID as a request parameter to be used in the
@@ -78,8 +80,8 @@ public class PortfolioController {
 	 * 
 	 * @return an active portfolio if found
 	 */
-	@GetMapping(path = "/active")
-	public @ResponseBody Portfolio getPortfolio(@RequestParam Long portfolioId) {
+	@GetMapping(path = "/active/{portfolioId}")
+	public @ResponseBody Portfolio getPortfolio(@PathVariable Long portfolioId) {
 		try {
 			Portfolio portfolio = portfolioService.getActivePortfolio(portfolioId);
 			return portfolio;
@@ -102,8 +104,7 @@ public class PortfolioController {
 	 *  /portfolios/name?name=test5
 	 * </code>
 	 * 
-	 * @param name the portfolio name as a request parameter to be used in the
-	 *                    query
+	 * @param name the portfolio name as a request parameter to be used in the query
 	 * 
 	 * @return an active portfolio if found
 	 */
@@ -122,27 +123,25 @@ public class PortfolioController {
 	/**
 	 * 
 	 * Deletes a portfolio via DELETE method through base URL:
-	 * <code>/portfolios</code>.
+	 * <code>/portfolios/{portfolioId}</code>.
 	 * <p>
 	 * 
-	 * Example payload:
+	 * Example URL:
 	 * 
 	 * <code> 
-	 * {
-	 *     "id" : 1
-	 * }
+	 *  /portfolios/1
 	 * </code>
 	 * 
-	 * @param portfolio the portfolio (can be a JSON payload) to be deleted from the
-	 *                  system.
+	 * @param portfolioId the portfolio (can be a JSON payload) to be deleted from
+	 *                    the system.
 	 * 
 	 * @return a string that says 'Deleted'
 	 * 
 	 */
-	@DeleteMapping(path = "")
-	public @ResponseBody String deletePortfolio(@RequestBody Portfolio portfolio) {
+	@DeleteMapping(path = "{portfolioId}")
+	public @ResponseBody String deletePortfolio(@PathVariable Long portfolioId) {
 		try {
-			portfolioService.deletePortfolio(portfolio.getId());
+			portfolioService.deletePortfolio(portfolioId);
 			return "Deleted";
 		} catch (EntryNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -151,27 +150,26 @@ public class PortfolioController {
 
 	/**
 	 * 
-	 * Retires a portfolio via POST through URL: <code>/portfolios/retire</code>.
+	 * Retires a portfolio via POST through URL:
+	 * <code>/portfolios/retire/{portfolioId}</code>.
+	 * 
 	 * <p>
 	 * 
-	 * Example payload:
+	 * Example URL:
 	 * 
 	 * <code> 
-	 * {
-	 *     "id" : 1
-	 * }
+	 *  /portfolios/retire/1
 	 * </code>
 	 * 
-	 * @param portfolio the portfolio (can be a JSON payload) to be retired from the
-	 *                  system.
+	 * @param portfolioId the ID of the portfolio to be retired from the system.
 	 * 
 	 * @return a string that says 'Retired'
 	 */
-	@PostMapping(path = "/retire")
-	public @ResponseBody String retirePortfolio(@RequestBody Portfolio portfolio) {
+	@PostMapping(path = "/retire/{portfolioId}")
+	public @ResponseBody String retirePortfolio(@PathVariable Long portfolioId) {
 
 		try {
-			portfolioService.retirePortfolio(portfolio.getId());
+			portfolioService.retirePortfolio(portfolioId);
 			return "Retired";
 		} catch (EntryNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -181,15 +179,30 @@ public class PortfolioController {
 
 	/**
 	 * 
-	 * Fetches all active portfolios via GET through URL:
-	 * <code>/portfolios/all</code>.
+	 * Fetches all active portfolios via GET through URL: <code>/portfolios</code>.
 	 * 
 	 * 
 	 */
-	@GetMapping(path = "/all")
+	@GetMapping(path = "")
 	public @ResponseBody Iterable<Portfolio> getAllPortfolios() {
 		// This returns a JSON or XML with the portfolios
 		return portfolioService.getPortfolios();
+	}
+
+	/**
+	 * 
+	 * Fetches active portfolios for a specific candidate via GET through URL:
+	 * <code>/portfolios/users/{userId}</code>.
+	 * 
+	 * @param userId the ID of the user to filter portfolios for
+	 * 
+	 * @return a list of all active portfolio entries for a particular user
+	 * 
+	 */
+	@GetMapping(path = "/user/{userId}")
+	public @ResponseBody Iterable<Portfolio> getPortfolios(@PathVariable Long userId) {
+		// This returns a JSON or XML with the workExperiences
+		return portfolioService.getPortfolios(userId);
 	}
 
 }

@@ -30,7 +30,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id")
 public class Portfolio extends AbstractRetirableEntity {
 
 	@NotBlank(message = "Portfolio name should not be blank")
@@ -39,7 +39,7 @@ public class Portfolio extends AbstractRetirableEntity {
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "portfolio")
 	private Set<ApplicationUser> applicationUser = new HashSet<>();
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade =  { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "portfolio")
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "portfolio")
 	private Set<Candidate> candidate = new HashSet<>();
 
 	public Portfolio(String name) {

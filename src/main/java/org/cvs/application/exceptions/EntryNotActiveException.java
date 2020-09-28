@@ -2,7 +2,8 @@ package org.cvs.application.exceptions;
 
 /**
  * 
- * Supports throwing of errors that arise from accessing inactive database entries.
+ * Supports throwing of errors that arise from accessing inactive database
+ * entries.
  * 
  * @author Yamiko J. Msosa
  * @version 1.0
@@ -14,9 +15,9 @@ public class EntryNotActiveException extends RuntimeException {
 	/**
 	 * Constructor for this class.
 	 *
-	 * @param message the error message 
+	 * @param message the error message
 	 * 
-	 */	
+	 */
 	public EntryNotActiveException(String message) {
 		super("Entry not found for :: " + message);
 	}

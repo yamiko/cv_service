@@ -5,17 +5,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.ConstraintViolationException;
+
 import org.cvs.application.exceptions.EntryNotActiveException;
 import org.cvs.application.exceptions.EntryNotFoundException;
 import org.cvs.application.exceptions.InconsistentDataException;
 import org.cvs.application.services.ApplicationUserService;
+import org.cvs.application.services.PortfolioService;
 import org.cvs.data.entities.ApplicationUser;
+import org.cvs.data.entities.Portfolio;
 
 /**
  * 
@@ -32,6 +37,9 @@ public class ApplicationUserController {
 
 	@Autowired
 	private ApplicationUserService userService;
+
+	@Autowired
+	private PortfolioService portfolioService;
 
 	/**
 	 * 
@@ -57,21 +65,55 @@ public class ApplicationUserController {
 		try {
 			ApplicationUser newUser = userService.addUser(user);
 			return newUser;
-		} catch (InconsistentDataException e) {
+		} catch (ConstraintViolationException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, e.getMessage(), e);
+		} catch (EntryNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+		} catch (EntryNotActiveException e) {
+			throw new ResponseStatusException(HttpStatus.LOCKED, e.getMessage(), e);
 		}
 	}
 
 	/**
 	 * 
-	 * Fetches an active application user via GET through URL:
-	 * <code>/users/active</code>.
+	 * Updates a new portfolio to an existing application user via POST through URL:
+	 * <code>/users/{userId}/portfolios/{portfolioId}</code>.
+	 * <p>
+	 * 
+	 * Example URL: /users/1/portfolios/4
+	 * 
+	 * <p>
+	 * 
+	 * @param userId      the ID of the user to associate with the portfolio
+	 * @param portfolioId the ID of the portfolio to associate with the user
+	 * 
+	 * @return the newly added portfolio
+	 */
+	@PostMapping(path = "/{userId}/portfolios/{portfolioId}")
+	public @ResponseBody Portfolio updatePortfolioWithUser(@PathVariable Long userId, @PathVariable Long portfolioId) {
+
+		try {
+			Portfolio updatedPortfolio = portfolioService.updatePortfolioWithUser(userId, portfolioId);
+			return updatedPortfolio;
+		} catch (ConstraintViolationException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, e.getMessage(), e);
+		} catch (EntryNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+		} catch (EntryNotActiveException e) {
+			throw new ResponseStatusException(HttpStatus.LOCKED, e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * 
+	 * Fetches an active application user via GET method through URL:
+	 * <code>/users/active/{userId}</code>.
 	 * <p>
 	 * 
 	 * Example URL:
 	 * 
 	 * <code> 
-	 *  /users/active?userId=1
+	 *  /users/active/1
 	 * </code>
 	 * 
 	 * @param userId the user ID as a request parameter to be used in the search
@@ -79,8 +121,8 @@ public class ApplicationUserController {
 	 * 
 	 * @return an active application user if found
 	 */
-	@GetMapping(path = "/active")
-	public @ResponseBody ApplicationUser getUser(@RequestParam Long userId) {
+	@GetMapping(path = "/active/{userId}")
+	public @ResponseBody ApplicationUser getUser(@PathVariable Long userId) {
 		try {
 			ApplicationUser user = userService.getActiveUser(userId);
 			return user;
@@ -93,25 +135,24 @@ public class ApplicationUserController {
 
 	/**
 	 * 
-	 * Deletes an application user via DELETE through base URL: <code>/users</code>.
+	 * Deletes an application user via DELETE method through base URL:
+	 * <code>/users/{userId}</code>.
 	 * <p>
 	 * 
 	 * Example payload:
 	 * 
 	 * <code> 
-	 * {
-	 *     "id" : 1
-	 * }
+	 *  /users/1
 	 * </code>
 	 * 
-	 * @param user the user (can be a JSON payload) to be deleted from the system.
+	 * @param userId the ID of the user to be deleted from the system.
 	 * 
 	 * @return a string that says 'Deleted'
 	 */
-	@DeleteMapping(path = "")
-	public @ResponseBody String deleteUser(@RequestBody ApplicationUser user) {
+	@DeleteMapping(path = "/{userId}")
+	public @ResponseBody String deleteUser(@PathVariable Long userId) {
 		try {
-			userService.deleteUser(user.getId());
+			userService.deleteUser(userId);
 			return "Deleted";
 		} catch (EntryNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -120,26 +161,25 @@ public class ApplicationUserController {
 
 	/**
 	 * 
-	 * Retires an application user via POST through URL: <code>/users/retire</code>.
+	 * Retires an application user via POST through URL:
+	 * <code>/users/retire/{userId}</code>.
 	 * <p>
 	 * 
 	 * Example payload:
 	 * 
 	 * <code> 
-	 * {
-	 *     "id" : 1
-	 * }
+	 *  /users/retire/1
 	 * </code>
 	 * 
-	 * @param user the user (can be a JSON payload) to be retired from the system.
+	 * @param userId the ID of the user to be retired from the system.
 	 * 
 	 * @return a string that says 'Retired'
 	 */
-	@PostMapping(path = "/retire")
-	public @ResponseBody String retireUser(@RequestBody ApplicationUser user) {
+	@PostMapping(path = "/retire/{userId}")
+	public @ResponseBody String retireUser(@PathVariable Long userId) {
 
 		try {
-			userService.retireUser(user.getId());
+			userService.retireUser(userId);
 			return "Retired";
 		} catch (EntryNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -156,7 +196,7 @@ public class ApplicationUserController {
 	 *         client preferences
 	 * 
 	 */
-	@GetMapping(path = "/all")
+	@GetMapping(path = "")
 	public @ResponseBody Iterable<ApplicationUser> getAllUsers() {
 		return userService.getUsers();
 	}

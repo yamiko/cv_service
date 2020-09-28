@@ -60,4 +60,14 @@ public interface ReferenceService {
 	 * @return a list of all active references in the database
 	 */
 	public List<Reference> getReferences();
+
+	/**
+	 * Fetches all active {@link Reference} instances for a specified candidate from
+	 * the database.
+	 *
+	 * @param candidateId the ID of the candidate to filter reference entries for
+	 * 
+	 * @return a list of all active references in the database
+	 */
+	public List<Reference> getReferences(Long candidateId);
 }

@@ -110,7 +110,7 @@ public class PortfolioServiceTest {
 		portfolio = portfolioService.addPortfolio(portfolio);
 		user = userService.addUser(user);
 
-		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio);
+		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio.getId());
 
 		assertTrue(user.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId()).findFirst()
 		        .orElse(null) != null);
@@ -122,8 +122,8 @@ public class PortfolioServiceTest {
 		portfolio = portfolioService.addPortfolio(portfolio);
 		user = userService.addUser(user);
 
-		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio);
-		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio);// Duplicate operation
+		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio.getId());
+		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio.getId());// Duplicate operation
 
 		user = userService.getActiveUser(user.getId());
 		log.info("User has this many portfolios: " + user.getPortfolio().stream()
@@ -134,12 +134,12 @@ public class PortfolioServiceTest {
 
 	@Test
 	@WithMockUser
-	public void testUpdatePortfolioWithUserUsingExistingUserAndNewPortfolio() {
+	public void testUpdatePortfolioWithUserUsingValidUserAndInvalidPortfolio() {
 		user = userService.addUser(user);
 
-		portfolio = portfolioService.updatePortfolioWithUser(user.getId(), portfolio);
-		assertTrue(user.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId()).findFirst()
-		        .orElse(null) != null);
+		assertThrows(EntryNotFoundException.class, () -> {
+			portfolio = portfolioService.updatePortfolioWithUser(user.getId(), -2L);
+		});
 	}
 
 	@Test
@@ -148,7 +148,7 @@ public class PortfolioServiceTest {
 		portfolio = portfolioService.addPortfolio(portfolio);
 		candidate = candidateService.addCandidate(candidate);
 
-		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio);
+		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio.getId());
 
 		assertTrue(candidate.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId()).findFirst()
 		        .orElse(null) != null);
@@ -160,8 +160,9 @@ public class PortfolioServiceTest {
 		portfolio = portfolioService.addPortfolio(portfolio);
 		candidate = candidateService.addCandidate(candidate);
 
-		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio);
-		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio);// Duplicate operation
+		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio.getId());
+		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio.getId());// Duplicate
+		                                                                                                // operation
 
 		log.info("Candidate has this many portfolios: " + candidate.getPortfolio().stream()
 		        .filter(p -> p.getId() == portfolio.getId()).collect(Collectors.toList()).size());
@@ -172,12 +173,12 @@ public class PortfolioServiceTest {
 
 	@Test
 	@WithMockUser
-	public void testUpdatePortfolioWithCandidateUsingExistingCandidateAndNewPortfolio() {
+	public void testUpdatePortfolioWithCandidateUsingValidCandidateAndInvalidPortfolio() {
 		candidate = candidateService.addCandidate(candidate);
 
-		portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), portfolio);
-		assertTrue(candidate.getPortfolio().stream().filter(p -> p.getId() == portfolio.getId()).findFirst()
-		        .orElse(null) != null);
+		assertThrows(EntryNotFoundException.class, () -> {
+			portfolio = portfolioService.updatePortfolioWithCandidate(candidate.getId(), -2L);
+		});
 	}
 
 	@Test

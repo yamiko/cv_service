@@ -66,4 +66,14 @@ public interface QualificationService {
 	 * @return a list of active qualification instances
 	 */
 	public List<Qualification> getQualifications();
+
+	/**
+	 * Lists all active {@link Qualification} instances for a specified candidate
+	 * from the database.
+	 *
+	 * @param candidateId the candidate to filter qualification instances for
+	 * 
+	 * @return a list of active qualification instances
+	 */
+	public List<Qualification> getQualifications(Long candidateId);
 }

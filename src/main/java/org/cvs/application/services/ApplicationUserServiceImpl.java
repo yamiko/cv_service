@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -13,6 +14,8 @@ import org.cvs.application.exceptions.EntryNotActiveException;
 import org.cvs.application.exceptions.EntryNotFoundException;
 import org.cvs.application.exceptions.InconsistentDataException;
 import org.cvs.data.entities.ApplicationUser;
+import org.cvs.data.entities.Candidate;
+import org.cvs.data.entities.Portfolio;
 import org.cvs.data.repositories.ApplicationUserRepository;
 import org.cvs.utils.Lookup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +78,19 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
 
 	@Override
 	public List<ApplicationUser> getUsers() {
+		List<ApplicationUser> users = userRepository.findAll().stream()
+		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
+		        .collect(Collectors.toList());
+		return users;
+	}
 
-		List<ApplicationUser> users = userRepository.findByActiveFlags(Lookup.NOT_VOIDED, Lookup.NOT_RETIRED);
+	@Override
+	public List<ApplicationUser> getUsers(Long portfolioId) {
+		List<ApplicationUser> users = userRepository.findAll().stream()
+		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED
+		                && (p.getPortfolio().stream().filter(q -> q.getId().intValue() == portfolioId).findFirst()
+		                        .orElse(new Portfolio()).getId().longValue() == portfolioId))
+		        .collect(Collectors.toList());
 		return users;
 	}
 

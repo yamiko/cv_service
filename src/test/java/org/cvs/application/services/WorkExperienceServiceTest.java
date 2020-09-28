@@ -49,7 +49,7 @@ public class WorkExperienceServiceTest {
 
 	WorkExperience workExperience, invalidWorkExperience, fetchedWorkExperience;
 	
-	Candidate candidate;
+	Candidate candidate, candidate2;
 	
 	int FALSE = 0;
 	
@@ -73,15 +73,22 @@ public class WorkExperienceServiceTest {
 		invalidWorkExperience.setRetired(Lookup.NOT_RETIRED);
 		invalidWorkExperience.setVoided(Lookup.NOT_VOIDED);
 
-		// Create a valid candidate
+		// Create valid candidates
 		candidate = new Candidate("John", "", "Smith");
-		
 		candidate.setAddressLine1("Address 1");
 		candidate.setCountry("UK");
 		candidate.setGender("M");
 		candidate.setEmail("email@email.com");
 		candidate.setDateOfBirth(LocalDate.of(1987, Month.JUNE, 15));
+		candidate.setRetired(Lookup.NOT_RETIRED);
+		candidate.setVoided(Lookup.NOT_VOIDED);
 
+		candidate = new Candidate("John2", "", "Smith2");
+		candidate.setAddressLine1("Address 1");
+		candidate.setCountry("UK");
+		candidate.setGender("M");
+		candidate.setEmail("email2@email.com");
+		candidate.setDateOfBirth(LocalDate.of(1987, Month.JUNE, 15));
 		candidate.setRetired(Lookup.NOT_RETIRED);
 		candidate.setVoided(Lookup.NOT_VOIDED);
 	}

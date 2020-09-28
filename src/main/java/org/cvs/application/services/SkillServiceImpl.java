@@ -91,6 +91,15 @@ public class SkillServiceImpl implements SkillService {
 	}
 
 	@Override
+	public List<Skill> getSkills(Long candidateId) {
+
+		List<Skill> skills = skillRepository.findAll().stream().filter(p -> p.getVoided() != Lookup.VOIDED
+		        && p.getRetired() != Lookup.RETIRED && p.getCandidate().getId().longValue() == candidateId)
+		        .collect(Collectors.toList());
+		return skills;
+	}
+
+	@Override
 	public Skill getActiveSkill(Long skillId) throws EntryNotActiveException, EntryNotFoundException {
 		Skill skill = skillRepository.findById(skillId).orElse(null);
 		if (skill != null && skill.getVoided() != Lookup.VOIDED && skill.getRetired() != Lookup.RETIRED) {

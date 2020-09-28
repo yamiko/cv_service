@@ -36,20 +36,29 @@ public interface QualificationRepository extends CrudRepository<Qualification, L
 	<S extends Qualification> S save(S qualification);
 
 	/**
+	 * Saves and flushes the given {@link Qualification}.
+	 *
+	 * @param qualification a qualification instance to be persisted in the database
+	 * 
+	 * @return the persisted qualification instance from the database
+	 */
+	<S extends Qualification> S saveAndFlush(S qualification);
+
+	/**
 	 * Returns all {@link Qualification} instances from the database.
 	 *
 	 * @param
 	 * 
-	 * @return	list of qualification instances from the database
+	 * @return list of qualification instances from the database
 	 */
 	List<Qualification> findAll();
 
 	/**
 	 * Returns all {@link Qualification} instances that match a given name.
 	 *
-	 * @param name	a name to be used as a search parameter 
+	 * @param name a name to be used as a search parameter
 	 * 
-	 * @return	list of qualification instances that match the search criteria
+	 * @return list of qualification instances that match the search criteria
 	 */
 	List<Qualification> findAllByName(String name);
 

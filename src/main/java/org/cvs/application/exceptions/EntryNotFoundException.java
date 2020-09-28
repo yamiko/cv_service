@@ -14,7 +14,7 @@ public class EntryNotFoundException extends RuntimeException {
 	/**
 	 * Constructor for this class.
 	 *
-	 * @param message the error message 
+	 * @param message the error message
 	 * 
 	 */
 	public EntryNotFoundException(String message) {

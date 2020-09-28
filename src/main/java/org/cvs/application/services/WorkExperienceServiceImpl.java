@@ -95,9 +95,17 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
 	@Override
 	public List<WorkExperience> getWorkExperiences() {
-
 		List<WorkExperience> workExperiences = workExperienceRepository.findAll().stream()
 		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED)
+		        .collect(Collectors.toList());
+		return workExperiences;
+	}
+
+	@Override
+	public List<WorkExperience> getWorkExperiences(Long candidateId) {
+		List<WorkExperience> workExperiences = workExperienceRepository.findAll().stream()
+		        .filter(p -> p.getVoided() != Lookup.VOIDED && p.getRetired() != Lookup.RETIRED
+		                && p.getCandidate().getId().longValue() == candidateId)
 		        .collect(Collectors.toList());
 		return workExperiences;
 	}

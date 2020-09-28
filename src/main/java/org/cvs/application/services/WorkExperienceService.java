@@ -63,4 +63,14 @@ public interface WorkExperienceService {
 	 * @return a list of all active work experience instances
 	 */
 	public List<WorkExperience> getWorkExperiences();
+
+	/**
+	 * Fetches all active {@link WorkExperience} instances for a particular
+	 * candidate from the database.
+	 *
+	 * @param
+	 * 
+	 * @return a list of all active work experience instances
+	 */
+	public List<WorkExperience> getWorkExperiences(Long candidateId);
 }

@@ -9,7 +9,7 @@ package org.cvs.utils;
  *
  */
 public class Lookup {
-	
+
 	public static final long DEFAULT_USER_ID = -1L;
 	public static final int TRUE = 1;
 	public static final int FALSE = 0;

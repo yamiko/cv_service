@@ -31,10 +31,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	/**
 	 * Constructor for this class.
 	 *
-	 * @param userDetailsService the {@link UserDetailsService} for this application
-	 * @param bCryptPasswordEncoder the {@link BCryptPasswordEncoder} for this application
+	 * @param userDetailsService    the {@link UserDetailsService} for this
+	 *                              application
+	 * @param bCryptPasswordEncoder the {@link BCryptPasswordEncoder} for this
+	 *                              application
 	 * 
-	 */	
+	 */
 	public WebSecurityConfiguration(UserDetailsService userDetailsService,
 	        BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -59,7 +61,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	/**
 	 * Configures context for authentication manager
 	 *
-	 * @param authenticationManagerBuilder the authentication manager builder for this application
+	 * @param authenticationManagerBuilder the authentication manager builder for
+	 *                                     this application
 	 * 
 	 */
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {

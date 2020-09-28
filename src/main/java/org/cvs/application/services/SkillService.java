@@ -60,4 +60,14 @@ public interface SkillService {
 	 * @return a list of all active skill instances
 	 */
 	public List<Skill> getSkills();
+
+	/**
+	 * Fetches all active {@link Skill} instances for a specified candidate from the
+	 * database.
+	 *
+	 * @param candidateId the ID of the candidate to filter skills for
+	 * 
+	 * @return a list of all active skill instances
+	 */
+	public List<Skill> getSkills(Long candidateId);
 }

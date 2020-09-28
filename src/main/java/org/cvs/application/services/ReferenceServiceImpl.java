@@ -103,6 +103,14 @@ public class ReferenceServiceImpl implements ReferenceService {
 	}
 
 	@Override
+	public List<Reference> getReferences(Long candidateId) {
+		List<Reference> references = referenceRepository.findAll().stream().filter(p -> p.getVoided() != Lookup.VOIDED
+		        && p.getRetired() != Lookup.RETIRED && p.getCandidate().getId().longValue() == candidateId)
+		        .collect(Collectors.toList());
+		return references;
+	}
+
+	@Override
 	public Reference getActiveReference(Long referenceId) throws EntryNotActiveException, EntryNotFoundException {
 		Reference reference = referenceRepository.findById(referenceId).orElse(null);
 		if (reference != null && reference.getVoided() != Lookup.VOIDED && reference.getRetired() != Lookup.RETIRED) {
