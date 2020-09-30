@@ -21,8 +21,8 @@ import org.cvs.application.services.PortfolioService;
 import org.cvs.data.entities.Candidate;
 import org.cvs.data.entities.Portfolio;
 
-@Controller // This means that this class is a Controller
-@RequestMapping(path = "/portfolios") // This means URL's start with /demo (after Application path)
+@Controller 
+@RequestMapping(path = "/portfolios") 
 public class PortfolioController {
 
 	@Autowired

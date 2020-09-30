@@ -20,8 +20,8 @@ import org.cvs.application.services.QualificationService;
 import org.cvs.data.entities.Qualification;
 import org.cvs.data.entities.Skill;
 
-@Controller // This means that this class is a Controller
-@RequestMapping(path = "/qualifications") // This means URL's start with /demo (after Application path)
+@Controller 
+@RequestMapping(path = "/qualifications") 
 public class QualificationController {
 
 	@Autowired
